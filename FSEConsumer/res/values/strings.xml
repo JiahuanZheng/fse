@@ -8,7 +8,7 @@
     <string name="audio_record">audio_record</string>
     <string name="upload">上传</string>
     <string name="title_activity_tmp">Tmp</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">欢迎使用小助手</string>
     <string name="add_text">添加文本信息</string>
     <string name="add_img">添加图片</string>
     <string name="add_audio">添加声音</string>
@@ -19,5 +19,10 @@
     <string name="display">预览结果</string>
     <string name="show_result">返回的结果是:</string>
     <string name="title_activity_inflater">InflaterActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="review_pic">评鉴照片</string>
+    <string name="request_snap">拍摄照片</string>
+    <string name="title_activity_request_image">RequestImageActivity</string>
+    <string name="req_img">请求拍照</string>
 
 </resources>

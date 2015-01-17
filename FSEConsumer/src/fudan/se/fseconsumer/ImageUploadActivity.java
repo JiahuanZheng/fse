@@ -42,7 +42,7 @@ public class ImageUploadActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.image_upload);
 		
 		final Button addText = (Button) findViewById(R.id.add_text);
 		final Button addImg = (Button) findViewById(R.id.add_img);
