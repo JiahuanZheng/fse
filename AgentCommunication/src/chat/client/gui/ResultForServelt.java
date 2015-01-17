@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -65,12 +65,12 @@ public class ResultForServelt extends Activity {
 
 	static final int LOCATION_UPDATE_REQUEST = 0x1000;
 
-	private Logger log = Logger.getLogger("log");
+//	private Logger log = Logger.getLogger("log");
 	private Uri photoUri = null;
 	private String capacity = null;
 
-	private jade.util.Logger logger = jade.util.Logger.getJADELogger(this
-			.getClass().getName());
+//	private jade.util.Logger logger = jade.util.Logger.getJADELogger(this
+//			.getClass().getName());
 	private MicroRuntimeServiceBinder microRuntimeServiceBinder;
 	private ServiceConnection serviceConnection;
 	private AgentController agentController = null;
@@ -120,6 +120,9 @@ public class ResultForServelt extends Activity {
 		
 		Bundle bundle = msg.getData();
 		String showMsg = (String) bundle.getString("message");
+		
+		final long taskid = bundle.getLong("taskid");
+		
 		w2PshowMessage.setText(showMsg);
 		snap.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -127,9 +130,9 @@ public class ResultForServelt extends Activity {
 				// File file = new File(mCurrentPhotoPath);
 				// if(file.exists()) file.delete();
 				// 一旦点击拍照按钮，上一次拍照的照片将被删除（如果有的话）
-				log.info("addr  ");
+//				log.info("addr  ");
 				dispatchTakePictureIntent();
-				log.info("addr  " + mCurrentPhotoPath);
+//				log.info("addr  " + mCurrentPhotoPath);
 			}
 		});
 		sendImg.setOnClickListener(new View.OnClickListener() {// 向后台的agent发送消息，告诉它，需要发送一个图片到serveltAgent
@@ -140,6 +143,9 @@ public class ResultForServelt extends Activity {
 					try {
 						Work2ServletMessage sendMsg = new Work2ServletMessage(
 								TaskTypeEnum.WORD2PHOTO, mCurrentPhotoPath);
+						
+						sendMsg.setTaskid(taskid);
+						
 						agentController.putO2AObject(sendMsg, false);
 					} catch (StaleProxyException e) {
 						// TODO Auto-generated catch block
@@ -291,7 +297,7 @@ public class ResultForServelt extends Activity {
 
 		@Override
 		public void onFailure(Throwable throwable) {
-			logger.log(Level.INFO, "Nickname already in use!");
+//			logger.log(Level.INFO, "Nickname already in use!");
 		}
 	};
 
@@ -398,26 +404,26 @@ public class ResultForServelt extends Activity {
 				public void onServiceConnected(ComponentName className,
 						IBinder service) {
 					microRuntimeServiceBinder = (MicroRuntimeServiceBinder) service;
-					logger.log(Level.INFO,
-							"Gateway successfully bound to MicroRuntimeService");
+//					logger.log(Level.INFO,
+//							"Gateway successfully bound to MicroRuntimeService");
 					startContainer(nickname, profile, agentStartupCallback);
 				};
 
 				public void onServiceDisconnected(ComponentName className) {
 					microRuntimeServiceBinder = null;
-					logger.log(Level.INFO,
-							"Gateway unbound from MicroRuntimeService");
+//					logger.log(Level.INFO,
+//							"Gateway unbound from MicroRuntimeService");
 				}
 			};
-			logger.log(Level.INFO, "Binding Gateway to MicroRuntimeService...");
+//			logger.log(Level.INFO, "Binding Gateway to MicroRuntimeService...");
 
 			bindService(new Intent(getApplicationContext(),
 					MicroRuntimeService.class), serviceConnection,
 					Context.BIND_AUTO_CREATE);
 
 		} else {
-			logger.log(Level.INFO,
-					"MicroRumtimeGateway already binded to service");
+//			logger.log(Level.INFO,
+//					"MicroRumtimeGateway already binded to service");
 			startContainer(nickname, profile, agentStartupCallback);
 		}
 	}
@@ -429,14 +435,14 @@ public class ResultForServelt extends Activity {
 			RuntimeCallback<Void> rc = new RuntimeCallback<Void>() {
 				@Override
 				public void onSuccess(Void thisIsNull) {
-					logger.log(Level.INFO,
-							"Successfully start of the container...");
+//					logger.log(Level.INFO,
+//							"Successfully start of the container...");
 					startAgent(nickname, agentStartupCallback);
 				}
 
 				@Override
 				public void onFailure(Throwable throwable) {
-					logger.log(Level.SEVERE, "Failed to start the container...");
+//					logger.log(Level.SEVERE, "Failed to start the container...");
 					throwable.printStackTrace();
 				}
 			};
@@ -453,8 +459,8 @@ public class ResultForServelt extends Activity {
 		RuntimeCallback<Void> rc = new RuntimeCallback<Void>() {
 			@Override
 			public void onSuccess(Void thisIsNull) {
-				logger.log(Level.INFO, "Successfully start of the "
-						+ AideAgent.class.getName() + "...");
+//				logger.log(Level.INFO, "Successfully start of the "
+//						+ AideAgent.class.getName() + "...");
 				try {
 					agentStartupCallback.onSuccess(MicroRuntime
 							.getAgent(nickname));
@@ -467,8 +473,8 @@ public class ResultForServelt extends Activity {
 
 			@Override
 			public void onFailure(Throwable throwable) {
-				logger.log(Level.SEVERE, "Failed to start the "
-						+ AideAgent.class.getName() + "...");
+//				logger.log(Level.SEVERE, "Failed to start the "
+//						+ AideAgent.class.getName() + "...");
 				agentStartupCallback.onFailure(throwable);
 			}
 		};
@@ -538,7 +544,7 @@ public class ResultForServelt extends Activity {
 
 		unbindService(serviceConnection);
 
-		logger.log(Level.INFO, "Destroy activity!");
+//		logger.log(Level.INFO, "Destroy activity!");
 	}
 
 	@Override

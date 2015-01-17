@@ -71,6 +71,7 @@ public class AideReceiveDelegatedBehaviour extends TickerBehaviour {
 						bundle.putString("message", rcvMsg.getMess());
 						// System.out.println("000消息已经接受到了  消息为 : + " +
 						// rcvMsg.getMess());
+						bundle.putLong("taskid", rcvMsg.getTaskid());
 						msg.setData(bundle);
 					}
 					if (rcvMsg.getType() == TaskTypeEnum.PHOTO2WORD) {
@@ -127,7 +128,6 @@ public class AideReceiveDelegatedBehaviour extends TickerBehaviour {
 						}
 
 						bundle.putLong("taskid", rcvMsg.getTaskid());
-						;
 						msg.setData(bundle);
 					}
 

@@ -23,7 +23,7 @@ Boston, MA  02111-1307, USA.
 
 package chat.client.gui;
 
-import jade.util.Logger;
+//import jade.util.Logger;
 
 import java.util.logging.Level;
 
@@ -46,7 +46,7 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
-	private Logger logger = Logger.getJADELogger(this.getClass().getName());
+//	private Logger logger = Logger.getJADELogger(this.getClass().getName());
 
 //	private MicroRuntimeServiceBinder microRuntimeServiceBinder;
 //	private ServiceConnection serviceConnection;
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 			final EditText capacity = (EditText)findViewById(R.id.edit_capacity);
 			nickname = nameField.getText().toString();
 			if (!checkName(nickname)) {
-				logger.log(Level.INFO, "Invalid nickname!");
+//				logger.log(Level.INFO, "Invalid nickname!");
 			} else {
 				try {
 					Intent intent = new Intent(MainActivity.this,
@@ -92,8 +92,8 @@ public class MainActivity extends Activity {
 				} catch (Exception ex) {
 					System.out.println(ex.toString()
 							+ "i want to konwekrwlkejr");
-					logger.log(Level.SEVERE,
-							"Unexpected exception creating chat agent!");
+//					logger.log(Level.SEVERE,
+//							"Unexpected exception creating chat agent!");
 				}
 			}
 		}
