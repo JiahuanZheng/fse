@@ -1,0 +1,11 @@
+<task>
+	<type>EstimatePriceByPhoto</type>
+	<description>请帮我给这个照片评一下价格</description>
+	<inputs>
+		<input>
+			<type></type>
+			<name></name>
+			<value></value>
+		</input>
+	</inputs>
+</task>
