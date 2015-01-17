@@ -1,0 +1,43 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/receive_inputs_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reply_price_txt"
+             />
+
+        <ImageView
+            android:id="@+id/receive_p2w_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/reply_price_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reply_price_txt" />
+
+        <EditText
+            android:id="@+id/reply_price_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/reply_price_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reply_price_btn" />
+    </LinearLayout>
+
+</ScrollView>
