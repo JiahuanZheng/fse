@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">consumerimg</string>
+    <string name="action_settings">Settings</string>
+    <string name="snap">拍照</string>
+    <string name="record">录音</string>
+    <string name="audio_record">audio_record</string>
+    <string name="upload">上传</string>
+    <string name="title_activity_tmp">Tmp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="add_text">添加文本信息</string>
+    <string name="add_img">添加图片</string>
+    <string name="add_audio">添加声音</string>
+    <string name="title_activity_add_text">AddTextActivity</string>
+    <string name="add_text_hint">请在下面文本框中分别输入键值对</string>
+    <string name="add_text_back_btn">填写完成</string>
+    <string name="title_activity_preview">PreviewActivity</string>
+    <string name="display">预览结果</string>
+    <string name="show_result">返回的结果是:</string>
+    <string name="title_activity_inflater">InflaterActivity</string>
+
+</resources>
