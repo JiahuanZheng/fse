@@ -1,40 +1,81 @@
 package edu.fudan.se.abc;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Date;
 
 import javax.jws.WebService;
 
-@WebService(endpointInterface = "edu.fudan.se.ImageReceiver")
+import edu.fudan.se.undergraduate.aggregator.NaiveAggregator;
+import edu.fudan.se.undergraduate.opration.MicroTaskOperation;
+
+@WebService(endpointInterface = "edu.fudan.se.abc.RequestImage")
 public class RequestImageImpl implements RequestImage {
-
-	
-	public String byte2Image(byte[] data, String path) {
-		if (data.length < 3 || path.equals("")) {
-			System.out.println("taiduanle");
-			return null;
-		}
-		try {
-			File ftmp = new File(path);
-			FileOutputStream imageOutput = new FileOutputStream(ftmp);
-			imageOutput.write(data, 0, data.length);
-			imageOutput.close();
-			System.out.println("Make Picture success,Please find image in "
-					+ path);
-			return ftmp.getAbsolutePath();
-		} catch (Exception ex) {
-			System.out.println("Exception: " + ex);
-			ex.printStackTrace();
-		}
-		return null;
-	}
-
 	@Override
 	public String backImg(String inputs) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		long id = MicroTaskOperation
+				.insertMicroTask(inputs, "initial");
+		if (id < 0) {
+			System.out.println("insert wrong at ImageReceiverImpl 41");
+			System.exit(0);
+		}
 
+		System.out.println("id is : " + id);
+
+		// new NaiveAggregator().aggrerator(taskXML, deadline)
+		String absPath = NaiveAggregator.aggrerator(id,
+				new Date(new Date().getTime() + 1000 * 30 * 1));
+		System.out.println("时间到了，准备返回的结果是"+absPath);
+		// 默认五分钟后收取答案，如果没有收到答案，则认为是失败的。
+		return Image2String(absPath);
+		
+	}
+	public static String Image2String(String absPath) {
+
+		try {
+			File file = new File(absPath);
+			long fileSize = file.length();
+			if (fileSize > Integer.MAX_VALUE) { // 注意
+				// 这里面是和Integer的最大值相比较的，因为字节数组中的单位最大只能够开到int。
+				System.out.println("444");
+				new Exception("The file is too big!!!");
+			}
+
+			byte[] bufferbytes = new byte[(int) fileSize];
+			FileInputStream fis = new FileInputStream(file);
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bufferbytes.length
+					&& (numRead = fis.read(bufferbytes, offset,
+							bufferbytes.length - offset)) >= 0) {
+				offset += numRead;
+			}
+			// 确保所有数据均被读取
+			if (offset != bufferbytes.length) {
+				System.out.println("Wrong with the translation!!!");
+				System.exit(0);
+			}
+			System.out.println("333  文件的长度是 ：  " + offset);
+			fis.close();
+
+			String uploadBuffer = new String(
+					org.apache.commons.codec.binary.Base64
+							.encodeBase64(bufferbytes));
+
+			System.out.println("good current");
+
+			return uploadBuffer;
+
+			// invokeWebService("receiveImg", uploadBuffer);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
 }
 
 

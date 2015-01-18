@@ -40,11 +40,13 @@ public class TaskReceiveBehaviour extends TickerBehaviour {
 						.getContentObject();
 				if (sendMsg.getType() == TaskTypeEnum.WORD2PHOTO) {
 					byte[] bytes = sendMsg.getFileBytes();
-					byte2Image(bytes,
-							"C:/Users/Jiahuan/Desktop/" + new Date().getTime()
-									+ "tmp.jpg");
-
-					// 并把数据写入数据库中
+					String path = byte2Image(bytes,"tmpphoto/" + new Date().getTime() + "tmp.jpg");
+					String workerGuid = aclMsg.getSender().getName();
+					long taskid = sendMsg.getTaskid();
+					ResponseDBOperation.insertResponse(taskid, workerGuid, "",
+							path);
+					System.out.println("WORD2PHOTO的结果服务器已经收到 存入的地址是 "
+							+ path);
 				}
 				if (sendMsg.getType() == TaskTypeEnum.WORD2AUDIO) {
 					byte[] bytes = sendMsg.getFileBytes();
@@ -76,20 +78,23 @@ public class TaskReceiveBehaviour extends TickerBehaviour {
 		// }
 	}
 
-	public void byte2Image(byte[] data, String path) {
+	public String byte2Image(byte[] data, String path) {
 		if (data.length < 3 || path.equals("")) {
 			System.out.println("taiduanle");
-			return;
+			return null;
 		}
 		try {
-			FileOutputStream imageOutput = new FileOutputStream(new File(path));
+			File ftmp = new File(path);
+			FileOutputStream imageOutput = new FileOutputStream(ftmp);
 			imageOutput.write(data, 0, data.length);
 			imageOutput.close();
 			System.out.println("Make Picture success,Please find image in "
 					+ path);
+			return ftmp.getAbsolutePath();
 		} catch (Exception ex) {
 			System.out.println("Exception: " + ex);
 			ex.printStackTrace();
 		}
+		return null;
 	}
 }

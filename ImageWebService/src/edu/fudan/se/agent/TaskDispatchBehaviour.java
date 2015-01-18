@@ -54,7 +54,7 @@ public class TaskDispatchBehaviour extends TickerBehaviour {
 							"value").getText();
 					processPhoto2Word(microTask, path);
 				}
-				if ("WORD2PHOTO".equalsIgnoreCase("***")) {
+				if ("RequestPhoto".equalsIgnoreCase(contentType)) {
 					// 留待其他类型
 					processWord2Photo(microTask);
 

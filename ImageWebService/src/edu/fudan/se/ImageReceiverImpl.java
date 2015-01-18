@@ -26,7 +26,6 @@ public class ImageReceiverImpl implements ImageReceiver {
 		String imgAbsPath = null;
 		long time = (new Date().getTime());
 		imgAbsPath = byte2Image(buffer, "tmpphoto/ws3" + time + ".jpg");
-
 		try {
 			Document doc = DocumentHelper.parseText(inputs);
 			@SuppressWarnings("unchecked")
