@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 //import java.util.logging.Logger;
 
-
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -51,8 +49,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import fudan.se.agent.AgentLauncher;
 import fudan.se.agent.AideAgent;
 import fudan.se.agent.CommunicationInterface;
+import fudan.se.location.LocationLauncher;
 import fudan.se.location.MyLocation;
 import fudan.se.location.MyLocationListener;
 import fudan.se.pool.TaskTypeEnum;
@@ -60,6 +60,9 @@ import fudan.se.pool.Work2ServletMessage;
 
 @SuppressLint("SimpleDateFormat")
 public class ResultForServelt extends Activity {
+
+	final private MyLocation myLocation = new MyLocation();
+
 	private String mCurrentPhotoPath;
 	private String mCurrentAudioPath;
 	static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -67,75 +70,61 @@ public class ResultForServelt extends Activity {
 	static final int REQUEST_TAKE_AUDIO = 3;
 
 	static final int LOCATION_UPDATE_REQUEST = 0x1000;
-
-//	private Logger log = Logger.getLogger("log");
 	private Uri photoUri = null;
 	private String capacity = null;
-
-//	private jade.util.Logger logger = jade.util.Logger.getJADELogger(this
-//			.getClass().getName());
-	private MicroRuntimeServiceBinder microRuntimeServiceBinder;
+	public String getCapacity() {
+		return capacity;
+	}
 	private ServiceConnection serviceConnection;
+	public ServiceConnection getServiceConnection() {
+		return serviceConnection;
+	}
+	public void setServiceConnection(ServiceConnection serviceConnection) {
+		this.serviceConnection = serviceConnection;
+	}
 	private AgentController agentController = null;
-	private CommunicationInterface comInterface = null;
-
+	public void setAgentController(AgentController agentController) {
+		this.agentController = agentController;
+	}
 	private TextView noinfo = null;// 一开始的展示版面
-	// WORD2PHOTO
-	// private TextView wordToPhoto = null;
-
-
 	private Button record = null;
-	
 	private TextView textView = null;
-
 	private Button sendAudio = null;
-
-	// private Button good = null;
-	// private Button bad = null;
-
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			if (msg.what == TaskTypeEnum.PHOTO2WORD.getVal()) {
-					setPhoto2WordView(msg);
+				setPhoto2WordView(msg);
 			}
 
 			if (msg.what == TaskTypeEnum.WORD2PHOTO.getVal()) {
 				setWord2PhotoView(msg);
 			}
-
-//			 if (msg.what == LOCATION_UPDATE_REQUEST) {
-//				 if(noinfo != null)
-//				 noinfo.setText(myLocation.toString());
-//			 }
 		}
 	};
-	
-	public void setWord2PhotoView(Message msg){
+
+	public Handler getHandler() {
+		return handler;
+	}
+
+	public void setWord2PhotoView(Message msg) {
 		setContentView(R.layout.word2photo);
-		
 		TextView w2PshowMessage = (TextView) findViewById(R.id.word2photo_show_message);
 		final ImageView mImageView = (ImageView) findViewById(R.id.image);
 		Button sendImg = (Button) findViewById(R.id.sendimg);
 		Button snap = (Button) findViewById(R.id.snap);
-		
+
 		Bundle bundle = msg.getData();
 		String showMsg = (String) bundle.getString("message");
-		
 		final long taskid = bundle.getLong("taskid");
-		
+
 		w2PshowMessage.setText(showMsg);
 		snap.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// File file = new File(mCurrentPhotoPath);
-				// if(file.exists()) file.delete();
-				// 一旦点击拍照按钮，上一次拍照的照片将被删除（如果有的话）
-//				log.info("addr  ");
 				dispatchTakePictureIntent();
-//				log.info("addr  " + mCurrentPhotoPath);
 			}
 		});
 		sendImg.setOnClickListener(new View.OnClickListener() {// 向后台的agent发送消息，告诉它，需要发送一个图片到serveltAgent
@@ -146,9 +135,9 @@ public class ResultForServelt extends Activity {
 					try {
 						Work2ServletMessage sendMsg = new Work2ServletMessage(
 								TaskTypeEnum.WORD2PHOTO, mCurrentPhotoPath);
-						
+
 						sendMsg.setTaskid(taskid);
-						
+
 						agentController.putO2AObject(sendMsg, false);
 					} catch (StaleProxyException e) {
 						// TODO Auto-generated catch block
@@ -162,27 +151,19 @@ public class ResultForServelt extends Activity {
 				}
 				mImageView.setImageURI(null);
 				setContentView(R.layout.noinformation);
-//				View view = View.inflate(ResultForServelt.this, R.layout.noinformation, null);
-//				view.invalidate();
 			}
 		});
-		
-	}
-	
-	public void setPhoto2WordView(Message msg) {
-		
-		
-		setContentView(R.layout.photo2word);
 
+	}
+
+	public void setPhoto2WordView(Message msg) {
+		setContentView(R.layout.photo2word);
 		TextView receive_inputs_txt = (TextView) findViewById(R.id.receive_inputs_txt);
 		final ImageView receive_p2w_image = (ImageView) findViewById(R.id.receive_p2w_image);
 		Button reply_price_btn = (Button) findViewById(R.id.reply_price_btn);
 		final EditText reply_price_edit = (EditText) findViewById(R.id.reply_price_edit);
-
 		Bundle bundle = msg.getData();
-
 		String imagePath = (String) bundle.getString("path");
-
 		// -------------------------------------------------
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = 4;
@@ -190,17 +171,10 @@ public class ResultForServelt extends Activity {
 		receive_p2w_image.setImageBitmap(bitmap);
 		// -------------------------------------------------
 		// 上述片段是减少图片占用的内存。
-
-		// Uri uri = Uri.fromFile(new File(imagePath));
-		// receive_p2w_image.setImageURI(uri);
-		// String showMsg = (String)bundle.getString("message");
-
 		String description = (String) bundle.getString("description");
 		List<String> keys = bundle.getStringArrayList("keys");
 		List<String> values = bundle.getStringArrayList("values");
-
 		String showMsg = description + "\n";
-
 		for (int i = 0; i < keys.size(); i++) {
 			String key = keys.get(i);
 			String val = values.get(i);
@@ -232,77 +206,29 @@ public class ResultForServelt extends Activity {
 		});
 
 	}
-
-	
-
-	public void setShow(int b_noinfo, int b_w2PshowMessage, int b_snap,
-			int b_record, int b_mImageView, int b_textView, int b_sendImg,
-			int b_sendAudio, int replyMsg) {
-
-		// /注意，0可见，4不可见
-		noinfo.setVisibility(b_noinfo);
-//		w2PshowMessage.setVisibility(b_w2PshowMessage);//===
-//		snap.setVisibility(b_snap);//===
-		record.setVisibility(b_record);
-//		mImageView.setVisibility(b_mImageView);//====
-		textView.setVisibility(b_textView);
-//		sendImg.setVisibility(b_sendImg);
-		sendAudio.setVisibility(b_sendAudio);
-		// good.setVisibility(b_good);
-		// bad.setVisibility(b_bad);
-		// int b_good,int b_bad
+	public MyLocation getMyLocation() {
+		return myLocation;
 	}
 
-	final private MyLocation myLocation = new MyLocation();
-	private LocationListener locationListener = new MyLocationListener(myLocation);
-	
 	private String nickname;
-	private RuntimeCallback<AgentController> agentStartupCallback = new RuntimeCallback<AgentController>() {
-		@Override
-		public void onSuccess(AgentController agent) {
-			agentController = agent;
-			try {
-				comInterface = agent
-						.getO2AInterface(CommunicationInterface.class);
-				comInterface.setHandler(handler);
-				comInterface.setCapacity(capacity);
-				comInterface.setCustomLocation(myLocation);
-			} catch (StaleProxyException e) {
-				e.printStackTrace();
-			}
-			System.out.println("aaa1" + agent);
-		}
 
-		@Override
-		public void onFailure(Throwable throwable) {
-//			logger.log(Level.INFO, "Nickname already in use!");
-		}
-	};
+	public String getNickname() {
+		return nickname;
+	}
 
-	private LocationManager locationManager = null;
-
-	private void launchLocationService() {
-		locationManager = (LocationManager) ResultForServelt.this
-				.getSystemService(Context.LOCATION_SERVICE);
-
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				0, locationListener);
-
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		launchLocationService();
-
 		setContentView(R.layout.activity_resultforservelt);
-		// buildGoogleApiClient();
-		noinfo = (TextView) findViewById(R.id.noinfo2);
-		// wordToPhoto = (TextView)findViewById(R.id.word2photo);
 
+		LocationLauncher.launchLocationService(this, myLocation);
+
+		noinfo = (TextView) findViewById(R.id.noinfo2);
 
 		record = (Button) findViewById(R.id.record);
 		record.setOnClickListener(new View.OnClickListener() {
@@ -318,17 +244,7 @@ public class ResultForServelt extends Activity {
 		nickname = (String) getIntent().getExtras().get("agentname");
 		capacity = (String) getIntent().getExtras().get("capacity");
 
-		SharedPreferences settings = getSharedPreferences("jadeChatPrefsFile",
-				0);
-		String host = settings.getString("defaultHost", "");
-		String port = settings.getString("defaultPort", "");
-		
-		
-		
-		startChat(nickname, host, port, agentStartupCallback);
-		// 上面这一行是用于开启agent并且将agent controller 的值赋给 agentController字段。
-		
-
+		new AgentLauncher(this).start();
 
 		sendAudio = (Button) findViewById(R.id.sendaudio);
 		sendAudio.setOnClickListener(new View.OnClickListener() {// 向后台的agent发送消息，告诉它，需要发送一个图片到serveltAgent
@@ -355,110 +271,6 @@ public class ResultForServelt extends Activity {
 
 					}
 				});
-
-		setShow(0, 4, 4, 4, 4, 4, 4, 4, 4);// 注意这个方法应该在界面元素实例化时候才能使用，我暂时未加null判断。mark一下。
-	}
-
-
-	public void startChat(final String nickname, final String host,
-			final String port,
-			final RuntimeCallback<AgentController> agentStartupCallback) {
-		final Properties profile = new Properties();
-		profile.setProperty(Profile.MAIN_HOST, host);
-		profile.setProperty(Profile.MAIN_PORT, port);
-		profile.setProperty(Profile.MAIN, Boolean.FALSE.toString());
-		profile.setProperty(Profile.JVM, Profile.ANDROID);
-
-		if (AndroidHelper.isEmulator()) {
-			profile.setProperty(Profile.LOCAL_HOST, AndroidHelper.LOOPBACK);
-		} else {
-			profile.setProperty(Profile.LOCAL_HOST,
-					AndroidHelper.getLocalIPAddress());
-		}
-		profile.setProperty(Profile.LOCAL_PORT, "2000");
-
-		if (microRuntimeServiceBinder == null) {
-			serviceConnection = new ServiceConnection() {
-				public void onServiceConnected(ComponentName className,
-						IBinder service) {
-					microRuntimeServiceBinder = (MicroRuntimeServiceBinder) service;
-//					logger.log(Level.INFO,
-//							"Gateway successfully bound to MicroRuntimeService");
-					startContainer(nickname, profile, agentStartupCallback);
-				};
-
-				public void onServiceDisconnected(ComponentName className) {
-					microRuntimeServiceBinder = null;
-//					logger.log(Level.INFO,
-//							"Gateway unbound from MicroRuntimeService");
-				}
-			};
-//			logger.log(Level.INFO, "Binding Gateway to MicroRuntimeService...");
-
-			bindService(new Intent(getApplicationContext(),
-					MicroRuntimeService.class), serviceConnection,
-					Context.BIND_AUTO_CREATE);
-
-		} else {
-//			logger.log(Level.INFO,
-//					"MicroRumtimeGateway already binded to service");
-			startContainer(nickname, profile, agentStartupCallback);
-		}
-	}
-
-	private void startContainer(final String nickname, Properties profile,
-			final RuntimeCallback<AgentController> agentStartupCallback) {
-		if (!MicroRuntime.isRunning()) {
-
-			RuntimeCallback<Void> rc = new RuntimeCallback<Void>() {
-				@Override
-				public void onSuccess(Void thisIsNull) {
-//					logger.log(Level.INFO,
-//							"Successfully start of the container...");
-					startAgent(nickname, agentStartupCallback);
-				}
-
-				@Override
-				public void onFailure(Throwable throwable) {
-//					logger.log(Level.SEVERE, "Failed to start the container...");
-					throwable.printStackTrace();
-				}
-			};
-
-			microRuntimeServiceBinder.startAgentContainer(profile, rc);
-		} else {
-			startAgent(nickname, agentStartupCallback);
-		}
-	}
-
-	private void startAgent(final String nickname,
-			final RuntimeCallback<AgentController> agentStartupCallback) {
-
-		RuntimeCallback<Void> rc = new RuntimeCallback<Void>() {
-			@Override
-			public void onSuccess(Void thisIsNull) {
-//				logger.log(Level.INFO, "Successfully start of the "
-//						+ AideAgent.class.getName() + "...");
-				try {
-					agentStartupCallback.onSuccess(MicroRuntime
-							.getAgent(nickname));
-
-				} catch (ControllerException e) {
-					// Should never happen
-					agentStartupCallback.onFailure(e);
-				}
-			}
-
-			@Override
-			public void onFailure(Throwable throwable) {
-//				logger.log(Level.SEVERE, "Failed to start the "
-//						+ AideAgent.class.getName() + "...");
-				agentStartupCallback.onFailure(throwable);
-			}
-		};
-		microRuntimeServiceBinder.startAgent(nickname,
-				AideAgent.class.getName(),
-				new Object[] { getApplicationContext() }, rc);
 	}
 
 	private File createImageFile() throws IOException {
@@ -484,9 +296,9 @@ public class ResultForServelt extends Activity {
 			try {
 				System.out.println("你被执行了么！！！");
 				photoFile = createImageFile();
-				System.out.println("你被执行了么！！！"+photoFile);
+				System.out.println("你被执行了么！！！" + photoFile);
 			} catch (IOException ex) {
-				System.out.println("出错了："+ex);
+				System.out.println("出错了：" + ex);
 			}
 
 			if (photoFile != null) {
@@ -519,10 +331,7 @@ public class ResultForServelt extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
 		unbindService(serviceConnection);
-
-//		logger.log(Level.INFO, "Destroy activity!");
 	}
 
 	@Override
@@ -539,7 +348,25 @@ public class ResultForServelt extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+}
+//	public void setShow(int b_noinfo, int b_w2PshowMessage, int b_snap,
+//			int b_record, int b_mImageView, int b_textView, int b_sendImg,
+//			int b_sendAudio, int replyMsg) {
+//
+//		// /注意，0可见，4不可见
+//		noinfo.setVisibility(b_noinfo);
+//		// w2PshowMessage.setVisibility(b_w2PshowMessage);//===
+//		// snap.setVisibility(b_snap);//===
+//		record.setVisibility(b_record);
+//		// mImageView.setVisibility(b_mImageView);//====
+//		textView.setVisibility(b_textView);
+//		// sendImg.setVisibility(b_sendImg);
+//		sendAudio.setVisibility(b_sendAudio);
+//		// good.setVisibility(b_good);
+//		// bad.setVisibility(b_bad);
+//		// int b_good,int b_bad
+//	}
 	// private GoogleApiClient mGoogleApiClient = null;
 	// private Location mLastLocation = null;
 
@@ -584,7 +411,7 @@ public class ResultForServelt extends Activity {
 	// super.onStop();
 	// }
 
-}
+
 
 // good.setOnClickListener(new View.OnClickListener()
 // {//向后台的agent发送消息，告诉它，需要发送一个图片到serveltAgent
@@ -636,40 +463,40 @@ public class ResultForServelt extends Activity {
 // }
 
 //
-//new Thread(new Runnable(){
-//	@Override
-//	public void run() {
-//		// TODO Auto-generated method stub
-//		while(true){
-//	   	 Message msg = new Message();
-//	   	 msg.what = LOCATION_UPDATE_REQUEST;
-//	   	 handler.sendMessage(msg);
-//	   	 try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		}
-//	}
-//}).start();
+// new Thread(new Runnable(){
+// @Override
+// public void run() {
+// // TODO Auto-generated method stub
+// while(true){
+// Message msg = new Message();
+// msg.what = LOCATION_UPDATE_REQUEST;
+// handler.sendMessage(msg);
+// try {
+// Thread.sleep(1000);
+// } catch (InterruptedException e) {
+// // TODO Auto-generated catch block
+// e.printStackTrace();
+// }
+// }
+// }
+// }).start();
 
-//private Criteria getCriteria() {
-//Criteria criteria = new Criteria();
-//// 设置定位精确度 Criteria.ACCURACY_COARSE比较粗略，Criteria.ACCURACY_FINE则比较精细
-//criteria.setAccuracy(Criteria.ACCURACY_FINE);
-//// 设置是否要求速度
-//criteria.setSpeedRequired(false);
-//// 设置是否允许运营商收费
-//criteria.setCostAllowed(false);
-//// 设置是否需要方位信息
-//criteria.setBearingRequired(false);
-//// 设置是否需要海拔信息
-//criteria.setAltitudeRequired(false);
-//// 设置对电源的需求
-//criteria.setPowerRequirement(Criteria.POWER_LOW);
-//return criteria;
-//}
+// private Criteria getCriteria() {
+// Criteria criteria = new Criteria();
+// // 设置定位精确度 Criteria.ACCURACY_COARSE比较粗略，Criteria.ACCURACY_FINE则比较精细
+// criteria.setAccuracy(Criteria.ACCURACY_FINE);
+// // 设置是否要求速度
+// criteria.setSpeedRequired(false);
+// // 设置是否允许运营商收费
+// criteria.setCostAllowed(false);
+// // 设置是否需要方位信息
+// criteria.setBearingRequired(false);
+// // 设置是否需要海拔信息
+// criteria.setAltitudeRequired(false);
+// // 设置对电源的需求
+// criteria.setPowerRequirement(Criteria.POWER_LOW);
+// return criteria;
+// }
 //
 // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 // {
