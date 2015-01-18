@@ -7,9 +7,11 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+
 import java.io.IOException;
 
 import android.os.Handler;
+import fudan.se.location.MyLocation;
 import fudan.se.pool.TaskTypeEnum;
 import fudan.se.pool.Work2ServletMessage;
 

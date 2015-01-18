@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.logging.Level;
 //import java.util.logging.Logger;
 
+
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -51,7 +53,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import fudan.se.agent.AideAgent;
 import fudan.se.agent.CommunicationInterface;
-import fudan.se.agent.MyLocation;
+import fudan.se.location.MyLocation;
+import fudan.se.location.MyLocationListener;
 import fudan.se.pool.TaskTypeEnum;
 import fudan.se.pool.Work2ServletMessage;
 
@@ -230,34 +233,7 @@ public class ResultForServelt extends Activity {
 
 	}
 
-	private LocationListener locationListener = new LocationListener() {
-		@Override
-		public void onLocationChanged(Location location) {
-			// TODO Auto-generated method stub
-			System.out.println("onLocationChanged"+location);
-			myLocation.setLatAndLon(location.getLatitude(),
-					location.getLongitude());
-			System.out.println("onLocationChanged2"+location);
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			System.out.println("onStatusChanged");
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-			System.out.println("onProviderEnabled");
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-			System.out.println("onProviderDisabled");
-		}
-	};
+	
 
 	public void setShow(int b_noinfo, int b_w2PshowMessage, int b_snap,
 			int b_record, int b_mImageView, int b_textView, int b_sendImg,
@@ -278,6 +254,8 @@ public class ResultForServelt extends Activity {
 	}
 
 	final private MyLocation myLocation = new MyLocation();
+	private LocationListener locationListener = new MyLocationListener(myLocation);
+	
 	private String nickname;
 	private RuntimeCallback<AgentController> agentStartupCallback = new RuntimeCallback<AgentController>() {
 		@Override

@@ -1,4 +1,4 @@
-package fudan.se.agent;
+package fudan.se.location;
 
 import java.util.Date;
 

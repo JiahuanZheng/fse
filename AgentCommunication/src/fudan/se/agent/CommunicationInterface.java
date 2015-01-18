@@ -1,5 +1,6 @@
 package fudan.se.agent;
 
+import fudan.se.location.MyLocation;
 import android.os.Handler;
 
 public interface CommunicationInterface {
