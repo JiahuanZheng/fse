@@ -46,16 +46,8 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
-//	private Logger logger = Logger.getJADELogger(this.getClass().getName());
-
-//	private MicroRuntimeServiceBinder microRuntimeServiceBinder;
-//	private ServiceConnection serviceConnection;
-//
-//	private AgentController agentController = null;
-	
 	static final int CHAT_REQUEST = 0;
 	static final int SETTINGS_REQUEST = 1;
-
 	private String nickname;
 
 	@Override
@@ -92,8 +84,6 @@ public class MainActivity extends Activity {
 				} catch (Exception ex) {
 					System.out.println(ex.toString()
 							+ "i want to konwekrwlkejr");
-//					logger.log(Level.SEVERE,
-//							"Unexpected exception creating chat agent!");
 				}
 			}
 		}
@@ -121,7 +111,7 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+}
 //	@Override
 //	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //		if (requestCode == CHAT_REQUEST) {
@@ -144,7 +134,7 @@ public class MainActivity extends Activity {
 //		}
 //	}
 	
-}
+
 //@Override
 //protected void onDestroy() {
 //	super.onDestroy();

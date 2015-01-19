@@ -1,46 +1,26 @@
 package chat.client.gui;
 
-import jade.android.AndroidHelper;
-import jade.android.MicroRuntimeService;
-import jade.android.MicroRuntimeServiceBinder;
-import jade.android.RuntimeCallback;
-import jade.core.MicroRuntime;
-import jade.core.Profile;
-import jade.util.leap.Properties;
 import jade.wrapper.AgentController;
-import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-//import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,11 +30,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import fudan.se.agent.AgentLauncher;
-import fudan.se.agent.AideAgent;
-import fudan.se.agent.CommunicationInterface;
 import fudan.se.location.LocationLauncher;
 import fudan.se.location.MyLocation;
-import fudan.se.location.MyLocationListener;
 import fudan.se.pool.TaskTypeEnum;
 import fudan.se.pool.Work2ServletMessage;
 
@@ -225,12 +202,15 @@ public class ResultForServelt extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_resultforservelt);
-
+		nickname = (String) getIntent().getExtras().get("agentname");
+		capacity = (String) getIntent().getExtras().get("capacity");
 		LocationLauncher.launchLocationService(this, myLocation);
-
-		noinfo = (TextView) findViewById(R.id.noinfo2);
-
+		
+		new AgentLauncher(this).start();
+		
+		//=============================下方内容可以忽略，因为论文中还没有提及录音的进一步工作。
 		record = (Button) findViewById(R.id.record);
+		record.setVisibility(View.INVISIBLE);
 		record.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -239,14 +219,10 @@ public class ResultForServelt extends Activity {
 				startActivityForResult(intent, REQUEST_TAKE_AUDIO);
 			}
 		});
-
 		textView = (TextView) findViewById(R.id.audio);
-		nickname = (String) getIntent().getExtras().get("agentname");
-		capacity = (String) getIntent().getExtras().get("capacity");
-
-		new AgentLauncher(this).start();
-
+		textView.setVisibility(View.INVISIBLE);
 		sendAudio = (Button) findViewById(R.id.sendaudio);
+		sendAudio.setVisibility(View.INVISIBLE);
 		sendAudio.setOnClickListener(new View.OnClickListener() {// 向后台的agent发送消息，告诉它，需要发送一个图片到serveltAgent
 					@Override
 					public void onClick(View v) {
