@@ -68,11 +68,9 @@ public class AideAgent extends Agent implements CommunicationInterface {
 			send(aclMsg);
 			System.out.println("发送完毕");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
 	public Handler getHandler() {
 		return handler;
 	}

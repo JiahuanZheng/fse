@@ -92,17 +92,18 @@ public class RequestImageActivity extends Activity {
 	
 	
 	public void processRequestPic(){
-		String inputs = "<task><type>RequestPhoto</type><description>Please Help Me Snap Photo</description><inputs>";
+		String inputs = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+				+ "<UIdisplay xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+				+ " xsi:noNamespaceSchemaLocation=\"fsestandard.xsd\">"
+				+"<Description>Help Me Take a Photo</Description>";
 		int length = infos.size();
 		for (int i = 0; i < length; i++) {
 			UploadInfo info = infos.get(i);
 			if (info.getType() == UploadType.TEXT) {
-				inputs += "<input>" + "<type>TEXT</type>" + "<name>"
-						+ info.getName() + "</name>" + "<value>"
-						+ info.getValue() + "</value>" + "</input>";
+				inputs += "<TextDisplay><Key>"+ info.getName() +"</Key><Value>"+ info.getValue() +"</Value></TextDisplay>";
 			}
 		}
-		inputs += "</inputs></task>";
+		inputs += "<TakeImage><Key></Key><Value></Value></TakeImage></UIdisplay>";
 		
 		int port = 9999;
 		String url = "http://10.131.253.172:" + port + "/bimg";

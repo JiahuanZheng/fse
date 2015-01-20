@@ -3,6 +3,11 @@ package edu.fudan.se.agent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.List;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 import edu.fudan.se.undergraduate.opration.ResponseDBOperation;
 import fudan.se.pool.TaskTypeEnum;
@@ -21,61 +26,38 @@ public class TaskReceiveBehaviour extends TickerBehaviour {
 		myAgent = a;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onTick() {
-		// TODO Auto-generated method stub
-
-		// TODO Auto-generated method stub
-		// System.out.println("T am Servlet Agent !!!");
 		MessageTemplate mt = MessageTemplate.and(
 				MessageTemplate.MatchPerformative(ACLMessage.INFORM),
 				MessageTemplate.MatchConversationId("result"));
 		ACLMessage aclMsg = myAgent.receive(mt);
-
-		// String workerGUID = aclMsg.getSender().getName();// 获取worker的全局ID。
-
 		if (aclMsg != null) {
 			try {
 				Work2ServletMessage sendMsg = (Work2ServletMessage) aclMsg
 						.getContentObject();
-				if (sendMsg.getType() == TaskTypeEnum.WORD2PHOTO) {
+				String dataXML = sendMsg.getMess();
+				System.out.println("Servlet Receive : " + dataXML);
+				Document doc =  DocumentHelper.parseText(dataXML);
+				List<Element> ls = doc.selectNodes("/UIdisplay/TakeImage");
+				if(ls != null && ls.size()>0){
 					byte[] bytes = sendMsg.getFileBytes();
 					String path = byte2Image(bytes,"tmpphoto/" + new Date().getTime() + "tmp.jpg");
-					String workerGuid = aclMsg.getSender().getName();
-					long taskid = sendMsg.getTaskid();
-					ResponseDBOperation.insertResponse(taskid, workerGuid, "",
-							path);
-					System.out.println("WORD2PHOTO的结果服务器已经收到 存入的地址是 "
-							+ path);
+					ls.get(0).element("Value").setText(path);
 				}
-				if (sendMsg.getType() == TaskTypeEnum.WORD2AUDIO) {
-					byte[] bytes = sendMsg.getFileBytes();
-					byte2Image(bytes, "C:/Users/Jiahuan/Desktop/tmp.3gp");
-					// 并把数据写入数据库中
-				}
-				if (sendMsg.getType() == TaskTypeEnum.PHOTO2WORD) {
-					System.out.println("收到的消息: type  " + sendMsg.getType()
-							+ "  mess:  " + sendMsg.getMess());
-
-					long taskid = sendMsg.getTaskid();
-					String workerGuid = aclMsg.getSender().getName();
-					ResponseDBOperation.insertResponse(taskid, workerGuid, "",
-							sendMsg.getMess());
-					// 这里面是忽略了template的作用。
-					System.out.println("PHOTO2WORD的结果服务器已经收到 ：价格是: "
-							+ sendMsg.getMess());
-				}
-
-				// System.exit(0);
-
+				String workerGuid = aclMsg.getSender().getName();
+				long taskid = sendMsg.getTaskid();
+				ResponseDBOperation.insertResponse(taskid, workerGuid, "",
+						doc.asXML());
+				System.out.println(doc.asXML());
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		// else {
-		// // System.out.println("没有消息！！！");
-		// }
+
 	}
 
 	public String byte2Image(byte[] data, String path) {
@@ -98,3 +80,33 @@ public class TaskReceiveBehaviour extends TickerBehaviour {
 		return null;
 	}
 }
+
+//
+//if (sendMsg.getType() == TaskTypeEnum.WORD2PHOTO) {
+//	byte[] bytes = sendMsg.getFileBytes();
+//	String path = byte2Image(bytes,"tmpphoto/" + new Date().getTime() + "tmp.jpg");
+//	
+//	
+//	System.out.println("WORD2PHOTO的结果服务器已经收到 存入的地址是 "
+//			+ path);
+//}
+//if (sendMsg.getType() == TaskTypeEnum.WORD2AUDIO) {
+//	byte[] bytes = sendMsg.getFileBytes();
+//	byte2Image(bytes, "C:/Users/Jiahuan/Desktop/tmp.3gp");
+//	// 并把数据写入数据库中
+//}
+//if (sendMsg.getType() == TaskTypeEnum.PHOTO2WORD) {
+//	System.out.println("收到的消息: type  " + sendMsg.getType()
+//			+ "  mess:  " + sendMsg.getMess());
+//
+//	long taskid = sendMsg.getTaskid();
+//	String workerGuid = aclMsg.getSender().getName();
+//	ResponseDBOperation.insertResponse(taskid, workerGuid, "",
+//			sendMsg.getMess());
+//	// 这里面是忽略了template的作用。
+//	System.out.println("PHOTO2WORD的结果服务器已经收到 ：价格是: "
+//			+ sendMsg.getMess());
+//}
+//
+//// System.exit(0);
+

@@ -8,5 +8,5 @@ import javax.jws.soap.SOAPBinding.Style;
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface ImageReceiver {
-	@WebMethod String receiveImg(String inputs,String attachment);
+	@WebMethod String receiveImg(String inputs);
 }

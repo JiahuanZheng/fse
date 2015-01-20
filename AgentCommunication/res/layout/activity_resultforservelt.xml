@@ -1,36 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/noinfo2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-       <TextView
-            android:id="@+id/noinfo2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/noinfo" />
-
-        <Button
-            android:id="@+id/record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/record" />
-
-        <TextView
-            android:id="@+id/audio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/noinfo" />
-
-        <Button
-            android:id="@+id/sendaudio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sendaudio" />
-    </LinearLayout>
-
-</ScrollView>
+        android:text="@string/noinfo" />
+</LinearLayout>

@@ -20,23 +20,27 @@ import edu.fudan.se.undergraduate.opration.MicroTaskOperation;
 public class ImageReceiverImpl implements ImageReceiver {
 
 	@Override
-	public String receiveImg(String inputs, String attachment) {
+	public String receiveImg(String inputs) {
 
-		byte[] buffer = Base64.decodeBase64(attachment);
-		String imgAbsPath = null;
-		long time = (new Date().getTime());
-		imgAbsPath = byte2Image(buffer, "tmpphoto/ws3" + time + ".jpg");
 		try {
+			
 			Document doc = DocumentHelper.parseText(inputs);
+			
 			@SuppressWarnings("unchecked")
-			List<org.dom4j.Element> eles = doc
-					.selectNodes("/task/inputs/input[type='IMG']");
-			org.dom4j.Element ele = eles.get(0);
+			List<Element> eles = doc.selectNodes("/UIdisplay/DisplayImage");
+			Element ele = eles.get(0);
 
-			Element valEle = ele.element("value");
+			Element valEle = ele.element("Value");
+			byte[] buffer = Base64.decodeBase64(valEle.getText());
+			
+			System.out.println("buffer length : "+buffer.length);
+			
+			String imgAbsPath = null;
+			long time = (new Date().getTime());
+			imgAbsPath = byte2Image(buffer, "tmpphoto/ws3" + time + ".jpg");
 			valEle.setText(imgAbsPath);
 
-			System.out.println("doc.asXML()" + doc.asXML());
+//			System.out.println("doc.asXML()" + doc.asXML());
 
 			long id = MicroTaskOperation
 					.insertMicroTask(doc.asXML(), "initial");
