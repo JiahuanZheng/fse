@@ -25,13 +25,6 @@ public class WSUploadImg {
 		+ " <UIdisplay xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 		+ " xsi:noNamespaceSchemaLocation=\"fsestandard.xsd\">"
 		+ " <Description>Estimate Price</Description>";
-//		+ " <TextDisplay><Key>类别 </Key> <Value>电脑 </Value> </TextDisplay> <TextDisplay>"
-//		+ " <Key>型号</Key><Value>联想ThinkPad X230</Value> </TextDisplay><TextDisplay>"
-//		+ " <Key>新旧程度</Key> <Value>9成新</Value> </TextDisplay> <TextDisplay>"
-//		+ " <Key>购买时间</Key> <Value>1年前</Value></TextDisplay><TextInput>"
-//		+ "<Key>结合新旧程度等，您认为这台电脑的价格是多少</Key><Value></Value></TextInput>"
-//		+ "<DisplayImage><Key></Key><Value>这里是照片的Base64码流</Value></DisplayImage>"
-//		+ "</UIdisplay>";
 		
 		for (int i = 0; i < length; i++) {
 			UploadInfo info = infos.get(i);
@@ -96,23 +89,6 @@ public class WSUploadImg {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			Bitmap bitmap = BitmapFactory.decodeFile(absPath);
 			Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/10, bitmap.getHeight()/10, true).compress(CompressFormat.JPEG, 50, out);
-
-//			byte[] bufferbytes = new byte[(int) fileSize];
-//			FileInputStream fis = new FileInputStream(file);
-//			int offset = 0;
-//			int numRead = 0;
-//			while (offset < bufferbytes.length
-//					&& (numRead = fis.read(bufferbytes, offset,
-//							bufferbytes.length - offset)) >= 0) {
-//				offset += numRead;
-//			}
-//			// 确保所有数据均被读取
-//			if (offset != bufferbytes.length) {
-//				System.out.println("Wrong with the translation!!!");
-//				System.exit(0);
-//			}
-//			System.out.println("333  文件的长度是 ：  " + offset);
-//			fis.close();
 			byte[] bytes =out.toByteArray();
 			String uploadBuffer = new String(
 					org.apache.commons.codec.binary.Base64
@@ -121,18 +97,10 @@ public class WSUploadImg {
 			System.out.println("good current:"+bytes.length);
 			out.close();
 			return uploadBuffer;
-			// invokeWebService("receiveImg", uploadBuffer);
-
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 }
-
-// if (i == (length - 1))
-// tail = "\"}";
-// else
-// tail = "\"},";
 
